@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -59,5 +60,14 @@ public class GameManager : MonoBehaviour
         GameOver,
         /// <summary>デバッグ用</summary>
         Debug
+    }
+
+    /// <summary>
+    /// シーンを移行するための関数
+    /// </summary>
+    /// <param name="sceneName">移行先のシーン名</param>
+    private void ChangeScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }
