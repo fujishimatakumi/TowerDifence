@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     GameStatus m_status;
+    [SerializeField] int m_rimit = 3;
+    int m_score = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,8 +31,10 @@ public class GameManager : MonoBehaviour
                 m_status = GameStatus.nowGame;
                 break;
             case GameStatus.nowGame:
-                Debug.Log("nowgame");
-                m_status = GameStatus.Clear;
+                if (m_score >= m_rimit)
+                {
+                    m_status = GameStatus.Clear;
+                }
                 break;
             case GameStatus.Clear:
                 Debug.Log("gamecear");
@@ -40,6 +44,10 @@ public class GameManager : MonoBehaviour
                 Debug.Log("gameover");
                 m_status = GameStatus.Debug;
                 break;
+        }
+        if (Input.GetButtonDown("Fire1"))
+        {
+            AddScore();
         }
     }
 
@@ -69,5 +77,13 @@ public class GameManager : MonoBehaviour
     private void ChangeScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    /// <summary>
+    /// スコアを加算する関数
+    /// </summary>
+    public void AddScore()
+    {
+        m_score++;
     }
 }
