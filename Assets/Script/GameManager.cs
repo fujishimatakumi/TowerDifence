@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     GameStatus m_status;
     [SerializeField] int m_rimit = 3;
     int m_score = 0;
+    //アイテムを購入するのに必要なポイント
+    [SerializeField] int m_resourcePoint = 1200;
+    //リソースポイントを表示するテキスト
+    [SerializeField] Text m_resourceText;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +29,7 @@ public class GameManager : MonoBehaviour
         {
             case GameStatus.initiate:
                 Debug.Log("initiate");
+                m_resourceText.text = m_resourcePoint.ToString();
                 m_status = GameStatus.gameStart;
                 break;
             case GameStatus.gameStart:
@@ -85,5 +91,27 @@ public class GameManager : MonoBehaviour
     public void AddScore()
     {
         m_score++;
+    }
+
+    /// <summary>
+    /// アイテムを購入するための関数
+    /// </summary>
+    /// <param name="cost">消費するコスト</param>
+    public void SubtractResourcePoint(int cost)
+    {
+        m_resourcePoint -= cost;
+    }
+    /// <summary>
+    /// アイテムを返還するための関数
+    /// </summary>
+    /// <param name="returnCost">返還されるコスト</param>
+    public void AddResourcePoint(int returnCost)
+    {
+        m_resourcePoint += returnCost;
+    }
+
+    public void RefleshPointText()
+    {
+        m_resourceText.text = m_resourcePoint.ToString();
     }
 }
