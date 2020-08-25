@@ -4,3 +4,5 @@ obj/
 *.sln
 *.csproj
 .vs/
+Assets/Scenes/Test_enemyNavigathon.unity
+Assets/Scenes/Test_enemyNavigathon.unity.meta
