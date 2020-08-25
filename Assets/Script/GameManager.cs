@@ -99,15 +99,24 @@ public class GameManager : MonoBehaviour
     /// <param name="cost">消費するコスト</param>
     public void SubtractResourcePoint(int cost)
     {
-        m_resourcePoint -= cost;
+        if (m_resourcePoint >= cost)
+        {
+            m_resourcePoint -= cost;
+            RefleshPointText();
+        }
+        else
+        {
+            Debug.Log("ポイントが足りません");
+        }
     }
     /// <summary>
     /// アイテムを返還するための関数
     /// </summary>
     /// <param name="returnCost">返還されるコスト</param>
     public void AddResourcePoint(int returnCost)
-    {
-        m_resourcePoint += returnCost;
+    {   
+            m_resourcePoint += returnCost;
+            RefleshPointText();
     }
 
     public void RefleshPointText()
