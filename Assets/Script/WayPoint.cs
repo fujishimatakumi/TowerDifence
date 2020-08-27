@@ -5,6 +5,6 @@ using UnityEngine;
 public class WayPoint : MonoBehaviour
 {
     //オブジェクトが移動するためのパス
-    Transform[] m_wayPoints;
+    public Transform[] m_wayPoints;
     
 }
