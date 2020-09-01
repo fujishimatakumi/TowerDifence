@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     //プレイヤーが移動する位置
     Transform m_moveTarget;
     //攻撃対象
-    GameObject m_target;
+    public GameObject m_target { get; set; }
     [SerializeField] LayerMask m_hitLayer;
     //レイを飛ばす距離
     [SerializeField] float m_distance;
@@ -42,10 +42,11 @@ public class PlayerController : MonoBehaviour
             if (m_attackTimeCount <= 0)
             {
                 EnemyShot();
+                m_attackTimeCount = m_attackTime;
             }
             else
             {
-                m_attackTime -= Time.deltaTime;
+                m_attackTimeCount -= Time.deltaTime;
             }
             Debug.Log("TargetName = " + m_target.name);
             Debug.Log("攻撃中");
