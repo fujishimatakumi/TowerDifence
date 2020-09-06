@@ -17,6 +17,7 @@ public class GunController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        m_intervalCount = m_interval;
         SetTaget();
     }
 
@@ -41,6 +42,14 @@ public class GunController : MonoBehaviour
     //弾となるオブジェクトを生成する
     public void Atack()
     {
-        Instantiate(m_bullet, this.gameObject.transform.position, Quaternion.identity);
+        if (m_intervalCount <= 0)
+        {
+            Instantiate(m_bullet, this.gameObject.transform.position, Quaternion.identity);
+            m_intervalCount = m_interval;
+        }
+        else
+        {
+            m_intervalCount -= Time.deltaTime;
+        }
     }
 }
