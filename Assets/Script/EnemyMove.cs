@@ -6,7 +6,7 @@ public class EnemyMove : MonoBehaviour
 {
     [SerializeField] GameObject m_wayPointsObject;
     WayPoint waypoints;
-    [SerializeField] float speed = 1f;
+    public float Speed = 1f;
     int wayPointIndex;
     // Start is called before the first frame update
     void Start()
@@ -17,7 +17,7 @@ public class EnemyMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector2.MoveTowards(transform.position, waypoints.m_wayPoints[wayPointIndex].position, speed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, waypoints.m_wayPoints[wayPointIndex].position, Speed * Time.deltaTime);
 
         /*実装方法１
          * キャラクターが前を向くが計算式を理解していない
