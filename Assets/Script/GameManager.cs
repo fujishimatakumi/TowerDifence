@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    GameStatus m_status;
+    public GameStatus m_status { get; set; }
     [SerializeField] int m_rimit = 3;
     int m_score = 0;
     //アイテムを購入するのに必要なポイント

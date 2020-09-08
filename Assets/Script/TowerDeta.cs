@@ -19,6 +19,20 @@ public class TowerDeta : MonoBehaviour
 
     public void DamageToTower(int damage)
     {
-        m_towerHP -= damage;    
+        m_towerHP -= damage;
+        CheckNowHP();
+    }
+    private void CheckNowHP()
+    {
+        if (m_towerHP <= 0)
+        {
+            GameOver();
+        }
+    }
+
+    public void GameOver()
+    {
+        GameManager gm = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
+        gm.m_status = GameManager.GameStatus.Clear;
     }
 }
