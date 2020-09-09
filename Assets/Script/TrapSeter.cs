@@ -58,7 +58,8 @@ public class TrapSeter : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            Vector3 setPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 setPos = screenPos + new Vector3(0, 0, 10);
             Instantiate(m_setTrapObj, setPos, Quaternion.identity);
         }    
     }
