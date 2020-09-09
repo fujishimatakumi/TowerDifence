@@ -16,8 +16,10 @@ public class EnemyDeta : MonoBehaviour
         string tag = collision.gameObject.tag;
         switch (tag)
         {
-            case "tower":
-                Debug.Log("タワーが攻撃されました");
+            case "Tower":
+                GameObject go = GameObject.FindGameObjectWithTag("Tower");
+                TowerDeta td = go.GetComponent<TowerDeta>();
+                td.DamageToTower(m_atackPoint);
                 break;
             default:
                 break;
