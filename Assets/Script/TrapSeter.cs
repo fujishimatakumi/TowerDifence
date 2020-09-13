@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TrapSeter : MonoBehaviour
 {
@@ -16,13 +17,13 @@ public class TrapSeter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        m_status = SetStatus.None;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!m_clickActive || m_setTrapObj == null) return;
+        if (!m_clickActive || m_status == SetStatus.None) return;
 
         switch (m_status)
         {
@@ -55,12 +56,22 @@ public class TrapSeter : MonoBehaviour
     /// 左クリックでオブジェクトを置くメソッド
     /// </summary>
     public void TrapInstallation()
-    {
+    {   
         if (Input.GetButtonDown("Fire1"))
         {
+            /*
             Vector3 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 setPos = screenPos + new Vector3(0, 0, 10);
-            Instantiate(m_setTrapObj, setPos, Quaternion.identity);
+            */
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, m_distance, m_hitLayer);
+            if (hit.collider.gameObject.tag == "Filed")
+            {
+                Tilemap tilemap = hit.collider.gameObject.GetComponent<Tilemap>();
+                var tilepos = tilemap.WorldToCell(Camera.main.WorldToScreenPoint(Input.mousePosition));
+                Vector3 setPos = tilemap.CellToWorld(tilepos);
+                Instantiate(m_setTrapObj, setPos, Quaternion.identity);
+            }
         }    
     }
     /// <summary>
@@ -68,8 +79,12 @@ public class TrapSeter : MonoBehaviour
     /// </summary>
     public void TrapRemove()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (m_status != SetStatus.Remove)
         {
+            m_status = SetStatus.Remove;
+        }
+        if (Input.GetButtonDown("Fire1"))
+        {   
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, m_distance, m_hitLayer);
 
@@ -79,6 +94,11 @@ public class TrapSeter : MonoBehaviour
             }
         }
     }
+
+    public void InstallationMode()
+    {
+        m_status = SetStatus.Installation;
+    }
 }
 
 public enum SetStatus : int
@@ -86,6 +106,8 @@ public enum SetStatus : int
     /// <summary>設置/// </summary>
     Installation,
     /// <summary>撤去/// </summary>
-    Remove
+    Remove,
+    /// <summary>何もしない/// </summary>
+    None
 
 }
