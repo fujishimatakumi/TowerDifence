@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.GameCenter;
 
@@ -16,9 +17,11 @@ public class GunController : MonoBehaviour
     GameObject m_target;
     //攻撃対象のデータを保持しておく変数
     EnemyDeta m_targetDeta;
+    bool m_farstAtack;
     // Start is called before the first frame update
     void Start()
     {
+        m_farstAtack = true;
         m_intervalCount = m_interval;
         m_target = null;
         m_targetDeta = null;
@@ -30,6 +33,10 @@ public class GunController : MonoBehaviour
         if (m_target && m_targetDeta)
         {
             QuickAtack();
+        }
+        else
+        {
+            m_farstAtack = true;
         }
     }
 
@@ -54,11 +61,12 @@ public class GunController : MonoBehaviour
 
     public void QuickAtack()
     {
-        if (m_intervalCount <= 0)
+        if (m_intervalCount <= 0 || m_farstAtack)
         {
             m_targetDeta.Damage(m_damge);
             Debug.DrawLine(this.gameObject.transform.position, m_target.transform.position, Color.red,1f);
             m_intervalCount = m_interval;
+            m_farstAtack = false;
         }
         else
         {
