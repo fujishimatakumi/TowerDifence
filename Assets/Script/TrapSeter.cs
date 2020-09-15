@@ -12,12 +12,17 @@ public class TrapSeter : MonoBehaviour
     [SerializeField] GameObject m_trap;
     [SerializeField] float m_distance = 10f;
     [SerializeField] LayerMask m_hitLayer;
+    //設置するゲームオブジェクト
     GameObject m_setTrapObj;
+    //設置するゲームオブジェクトのデータ
+    TrapDeta m_setTrapDeta;
     SetStatus m_status;
+    GameManager m_manager;
     // Start is called before the first frame update
     void Start()
     {
         m_status = SetStatus.None;
+        m_manager = GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -44,6 +49,7 @@ public class TrapSeter : MonoBehaviour
     public void SetTrapObject(GameObject trap)
     {
         m_setTrapObj = trap;
+        m_setTrapDeta = m_setTrapObj.GetComponent<TrapDeta>();
     }
     /// <summary>
     /// 現在設定されているトラップオブジェクトを空にする
@@ -51,12 +57,16 @@ public class TrapSeter : MonoBehaviour
     public void ResetTrapObject()
     {
         m_setTrapObj = null;
+        m_setTrapDeta = null;
     }
     /// <summary>
     /// 左クリックでオブジェクトを置くメソッド
     /// </summary>
     public void TrapInstallation()
-    {   
+    {
+        if (m_setTrapObj == null) return;
+
+        
         if (Input.GetButtonDown("Fire1"))
         {
             /*
@@ -71,6 +81,7 @@ public class TrapSeter : MonoBehaviour
                 var tilepos = tilemap.WorldToCell(Camera.main.WorldToScreenPoint(Input.mousePosition));
                 Vector3 setPos = tilemap.CellToWorld(tilepos);
                 Instantiate(m_setTrapObj, setPos, Quaternion.identity);
+                m_manager.SubtractResourcePoint(m_setTrapDeta.m_cost);
             }
         }    
     }
@@ -90,6 +101,8 @@ public class TrapSeter : MonoBehaviour
 
             if (hit.collider.gameObject.tag == "Trap")
             {
+                TrapDeta td = hit.collider.gameObject.GetComponent<TrapDeta>();
+                m_manager.AddResourcePoint(td.m_returnCost);
                 Destroy(hit.collider.gameObject);
             }
         }
