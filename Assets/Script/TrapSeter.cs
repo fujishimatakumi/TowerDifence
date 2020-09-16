@@ -18,11 +18,13 @@ public class TrapSeter : MonoBehaviour
     TrapDeta m_setTrapDeta;
     SetStatus m_status;
     GameManager m_manager;
+    Tilemap m_tilemap;
     // Start is called before the first frame update
     void Start()
     {
         m_status = SetStatus.None;
         m_manager = GetComponent<GameManager>();
+        m_tilemap = GameObject.FindGameObjectWithTag("Filed").GetComponent<Tilemap>();
     }
 
     // Update is called once per frame
@@ -76,10 +78,10 @@ public class TrapSeter : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, m_distance, m_hitLayer);
             if (hit.collider.gameObject.tag == "Filed")
-            {
-                Tilemap tilemap = hit.collider.gameObject.GetComponent<Tilemap>();
-                var tilepos = tilemap.WorldToCell(Camera.main.WorldToScreenPoint(Input.mousePosition));
-                Vector3 setPos = tilemap.CellToWorld(tilepos);
+            {   
+                var tilepos =m_tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                Debug.Log(tilepos);
+                Vector3 setPos =  m_tilemap.GetCellCenterWorld(tilepos);
                 Instantiate(m_setTrapObj, setPos, Quaternion.identity);
                 m_manager.SubtractResourcePoint(m_setTrapDeta.m_cost);
             }
