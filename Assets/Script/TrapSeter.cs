@@ -16,7 +16,7 @@ public class TrapSeter : MonoBehaviour
     GameObject m_setTrapObj;
     //設置するゲームオブジェクトのデータ
     TrapDeta m_setTrapDeta;
-    SetStatus m_status;
+    public SetStatus m_status { get; set; }
     GameManager m_manager;
     Tilemap m_tilemap;
     // Start is called before the first frame update
@@ -78,12 +78,15 @@ public class TrapSeter : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, m_distance, m_hitLayer);
             if (hit.collider.gameObject.tag == "Filed")
-            {   
-                var tilepos =m_tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                Debug.Log(tilepos);
-                Vector3 setPos =  m_tilemap.GetCellCenterWorld(tilepos);
-                Instantiate(m_setTrapObj, setPos, Quaternion.identity);
-                m_manager.SubtractResourcePoint(m_setTrapDeta.m_cost);
+            {
+                if (m_manager.m_resourcePoint >= m_setTrapDeta.m_cost)
+                {
+                    var tilepos = m_tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                    Debug.Log(tilepos);
+                    Vector3 setPos = m_tilemap.GetCellCenterWorld(tilepos);
+                    Instantiate(m_setTrapObj, setPos, Quaternion.identity);
+                    m_manager.SubtractResourcePoint(m_setTrapDeta.m_cost);
+                }
             }
         }    
     }
@@ -114,6 +117,18 @@ public class TrapSeter : MonoBehaviour
     {
         m_status = SetStatus.Installation;
     }
+
+    public void CheckPoint()
+    {
+        if (m_manager.m_resourcePoint <= 0)
+        {
+            m_status = SetStatus.NotHasPoint;
+        }
+        else
+        {
+            
+        }
+    }
 }
 
 public enum SetStatus : int
@@ -123,6 +138,7 @@ public enum SetStatus : int
     /// <summary>撤去/// </summary>
     Remove,
     /// <summary>何もしない/// </summary>
-    None
-
+    None,
+    /// <summary>ポイントを持っていない</summary>
+    NotHasPoint
 }

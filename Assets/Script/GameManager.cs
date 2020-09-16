@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] int m_rimit = 3;
     int m_score = 0;
     //アイテムを購入するのに必要なポイント
-    [SerializeField] int m_resourcePoint = 1200;
+
+    [field:SerializeField]
+    public int m_resourcePoint { get; private set; } = 1200;
     //リソースポイントを表示するテキスト
     [SerializeField] Text m_resourceText;
     // Start is called before the first frame update
