@@ -18,6 +18,14 @@ public class EnemyDeta : MonoBehaviour
         m_animator = GetComponent<Animator>();
     }
 
+    private void Update()
+    {
+        if (m_hitPoint <= 0)
+        {
+            EnemyDstroy();
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         string tag = collision.gameObject.tag;
@@ -42,5 +50,10 @@ public class EnemyDeta : MonoBehaviour
     public void OnDamageAnim()
     {
         m_animator.SetTrigger("Damage");
+    }
+
+    public void EnemyDstroy()
+    {
+        Destroy(this.gameObject);
     }
 }
