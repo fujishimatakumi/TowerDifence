@@ -11,6 +11,13 @@ public class EnemyDeta : MonoBehaviour
     [field:SerializeField]
     public int m_atackPoint { get; set; }
 
+    Animator m_animator;
+
+    private void Start()
+    {
+        m_animator = GetComponent<Animator>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         string tag = collision.gameObject.tag;
@@ -29,5 +36,11 @@ public class EnemyDeta : MonoBehaviour
     public void Damage(int damege)
     {
         m_hitPoint -= damege;
+        OnDamageAnim();
+    }
+
+    public void OnDamageAnim()
+    {
+        m_animator.SetTrigger("Damage");
     }
 }
