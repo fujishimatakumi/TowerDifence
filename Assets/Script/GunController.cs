@@ -38,6 +38,7 @@ public class GunController : MonoBehaviour
         {
             m_farstAtack = true;
         }
+
     }
 
     //シーンからエネミーを見つけてくる
@@ -87,6 +88,22 @@ public class GunController : MonoBehaviour
         else
         {
             return;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (m_target)
+        {
+            return;
+        }
+        else
+        {
+            if (collision.gameObject.tag == "Enemy")
+            {
+                m_target = collision.gameObject;
+                m_targetDeta = m_target.GetComponent<EnemyDeta>();
+            }
         }
     }
 
