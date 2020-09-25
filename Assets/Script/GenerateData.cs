@@ -15,4 +15,8 @@ public class GenerateData : MonoBehaviour
 
    [field: SerializeField]
    public WayPoint Waypoint { get; set; }
+
+    public bool NextFlug { get; set; }
+    [field:SerializeField]
+    public int GeneraterIndex { get; set; }
 }

@@ -5,21 +5,13 @@ using UnityEngine;
 public class EnemyMove : MonoBehaviour
 {
     [SerializeField] string m_wayPointsObject = "WayPoint1";
-    WayPoint waypoints;
+    public WayPoint waypoints { get; set; }
     public float Speed = 1f;
     int wayPointIndex;
-    // Start is called before the first frame update
-    void Start()
-    {
-        GameObject waypointObj = GameObject.Find(m_wayPointsObject);
-        waypoints = waypointObj.GetComponent<WayPoint>();
-        StartCoroutine(Move(waypoints));
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void OnMove()
     {
-       
+        StartCoroutine(Move(waypoints));
     }
 
     public IEnumerator Move(WayPoint wayPoint)
