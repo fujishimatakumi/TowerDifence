@@ -9,6 +9,7 @@ TagManager:
   - Trap
   - Tower
   - Manager
+  - setField
   layers:
   - Default
   - TransparentFX
