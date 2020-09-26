@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [field:SerializeField]
     public int EnemyNum { get; set; }
     [SerializeField] Text m_enemyNumText;
+    [SerializeField] Text m_towerHPText;
     //アイテムを購入するのに必要なポイント
 
     [field:SerializeField]
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("initiate");
                 m_resourceText.text = m_resourcePoint.ToString();
                 m_enemyNumText.text = EnemyNum.ToString();
+                GetTowerHP();
                 m_status = GameStatus.gameStart;
                 break;
             case GameStatus.gameStart:
@@ -133,5 +135,12 @@ public class GameManager : MonoBehaviour
     {
         EnemyNum--;
         m_enemyNumText.text = EnemyNum.ToString();
+    }
+
+    public void GetTowerHP()
+    {
+        GameObject go = GameObject.FindGameObjectWithTag("Tower");
+        TowerDeta td = go.GetComponent<TowerDeta>();
+        m_towerHPText.text = td.m_towerHP.ToString();
     }
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class TowerDeta : MonoBehaviour
 {
-    [SerializeField] int m_towerHP = 10;
+    [field:SerializeField]
+    public int m_towerHP { get; set; } = 10;
     // Start is called before the first frame update
     void Start()
     {

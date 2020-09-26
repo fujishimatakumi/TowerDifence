@@ -20,10 +20,7 @@ public class EnemyDeta : MonoBehaviour
 
     private void Update()
     {
-        if (m_hitPoint <= 0)
-        {
-            EnemyDstroy();
-        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -35,15 +32,29 @@ public class EnemyDeta : MonoBehaviour
                 GameObject go = GameObject.FindGameObjectWithTag("Tower");
                 TowerDeta td = go.GetComponent<TowerDeta>();
                 td.DamageToTower(m_atackPoint);
+                GameObject go1 = GameObject.FindGameObjectWithTag("Manager");
+                GameManager gm = go1.GetComponent<GameManager>();
+                gm.DecreceEnemy();
+                gm.GetTowerHP();
+                Destroy(this.gameObject);
                 break;
             default:
                 break;
         }
     }
 
+    private void CheckHP()
+    {
+        if (m_hitPoint <= 0)
+        {
+            EnemyDstroy();
+        }
+    }
+
     public void Damage(int damege)
     {
         m_hitPoint -= damege;
+        CheckHP();
         OnDamageAnim();
     }
 
@@ -54,6 +65,9 @@ public class EnemyDeta : MonoBehaviour
 
     public void EnemyDstroy()
     {
+        GameObject go = GameObject.FindGameObjectWithTag("Manager");
+        GameManager gm = go.GetComponent<GameManager>();
+        gm.DecreceEnemy();
         Destroy(this.gameObject);
     }
 }
