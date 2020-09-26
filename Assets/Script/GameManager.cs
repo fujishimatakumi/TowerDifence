@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public GameStatus m_status { get; set; }
     [SerializeField] int m_rimit = 3;
     int m_score = 0;
+    [field:SerializeField]
+    public int EnemyNum { get; set; }
+    [SerializeField] Text m_enemyNumText;
     //アイテムを購入するのに必要なポイント
 
     [field:SerializeField]
@@ -32,6 +35,7 @@ public class GameManager : MonoBehaviour
             case GameStatus.initiate:
                 Debug.Log("initiate");
                 m_resourceText.text = m_resourcePoint.ToString();
+                m_enemyNumText.text = EnemyNum.ToString();
                 m_status = GameStatus.gameStart;
                 break;
             case GameStatus.gameStart:
@@ -124,5 +128,10 @@ public class GameManager : MonoBehaviour
     public void RefleshPointText()
     {
         m_resourceText.text = m_resourcePoint.ToString();
+    }
+    public void DecreceEnemy()
+    {
+        EnemyNum--;
+        m_enemyNumText.text = EnemyNum.ToString();
     }
 }
