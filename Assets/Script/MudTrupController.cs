@@ -6,7 +6,7 @@ public class MudTrupController : MonoBehaviour
 {
     //減速させる割合
     [SerializeField] float m_DecelerationMag = 2f;
-    EnemyMove m_em;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -22,19 +22,21 @@ public class MudTrupController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         GameObject go = collision.gameObject;
-        m_em = go.gameObject.GetComponent<EnemyMove>();
-        if (m_em)
+        EnemyMove em = go.gameObject.GetComponent<EnemyMove>();
+        if (em)
         {
-            m_em.Speed = m_em.Speed / m_DecelerationMag;
+            em.tmpSpeed = em.Speed;
+            em.Speed = em.Speed / m_DecelerationMag;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (m_em)
+        EnemyMove em = collision.gameObject.GetComponent<EnemyMove>();
+        if (em)
         {
-            m_em.Speed = m_em.Speed * m_DecelerationMag;
+            em.Speed = em.tmpSpeed;
         }
-        m_em = null;
+        
     }
 }
