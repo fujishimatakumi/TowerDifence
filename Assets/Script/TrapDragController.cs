@@ -19,6 +19,7 @@ public class TrapDragController : MonoBehaviour,IDragHandler,IDropHandler,IBegin
         m_gameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
         m_objectData = m_setObject.GetComponent<TrapDeta>();
         m_tilemap = GameObject.FindGameObjectWithTag("setField").GetComponent<Tilemap>();
+        StartCoroutine(CheckClicke());
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -66,8 +67,33 @@ public class TrapDragController : MonoBehaviour,IDragHandler,IDropHandler,IBegin
                 }
             }
         }
-            
-        
+    }
+
+    private IEnumerator CheckClicke()
+    {
+        while (true)
+        {
+            EnableTrapUI();
+            yield return null;
+        }
+    }
+
+    private void EnableTrapUI()
+    {
+        if (Input.GetButtonDown("Fire2"))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction, m_distance, m_hitLayer);
+
+            foreach (var item in hits)
+            {
+                if (item.collider.gameObject.tag == "Trap")
+                {
+                    TrapDeta td = item.collider.gameObject.GetComponent<TrapDeta>();
+                    td.EnableCanvas();
+                }
+            }
+        }
     }
 
 }

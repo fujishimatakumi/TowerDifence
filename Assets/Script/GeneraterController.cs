@@ -12,10 +12,11 @@ public class GeneraterController : MonoBehaviour
     float m_generateMagni;
     float m_nextWaitTime;
     [SerializeField] GameObject m_enemy;
+    [SerializeField] float m_generateWaiteTime = 3f;
      // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(Contorolle());   
+        StartCoroutine(GenerateWaite());   
     }
 
     public IEnumerator Contorolle()
@@ -44,6 +45,16 @@ public class GeneraterController : MonoBehaviour
            yield return new WaitForSeconds(m_nextWaitTime);
             m_dataIndex++;
         }
+    }
+
+    private IEnumerator GenerateWaite()
+    {
+        while (m_generateWaiteTime > 0)
+        {
+            m_generateWaiteTime -= Time.deltaTime;
+            yield return null;
+        }
+        StartCoroutine(Contorolle());
     }
 
     private void SetData(GenerateData data)
