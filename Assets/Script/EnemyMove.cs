@@ -7,6 +7,7 @@ public class EnemyMove : MonoBehaviour
     [SerializeField] string m_wayPointsObject = "WayPoint1";
     public WayPoint waypoints { get; set; }
     public float Speed = 1f;
+    public float tmpSpeed = 0;
     int wayPointIndex;
 
     public void OnMove()
