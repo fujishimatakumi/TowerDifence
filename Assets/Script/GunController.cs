@@ -17,6 +17,7 @@ public class GunController : MonoBehaviour
     GameObject m_target;
     //攻撃対象のデータを保持しておく変数
     EnemyDeta m_targetDeta;
+    BulletController m_bulletController;
     bool m_farstAtack;
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class GunController : MonoBehaviour
         m_intervalCount = m_interval;
         m_target = null;
         m_targetDeta = null;
+        m_bulletController = m_bullet.GetComponent<BulletController>();
     }
 
     // Update is called once per frame
@@ -33,6 +35,7 @@ public class GunController : MonoBehaviour
         if (m_target && m_targetDeta)
         {
             QuickAtack();
+            LockAtTarget();
         }
         else
         {
@@ -66,6 +69,9 @@ public class GunController : MonoBehaviour
         {
             m_targetDeta.Damage(m_damge);
             Debug.DrawLine(this.gameObject.transform.position, m_target.transform.position, Color.red,1f);
+            GameObject bullet =  Instantiate(m_bullet,this.gameObject.transform.position,Quaternion.identity);
+            BulletController bc = bullet.GetComponent<BulletController>();
+            bc.MoveStart(m_target.transform.position);
             m_intervalCount = m_interval;
             m_farstAtack = false;
         }
@@ -114,5 +120,12 @@ public class GunController : MonoBehaviour
             m_target = null;
             m_targetDeta = null;
         }
+    }
+
+    private void LockAtTarget()
+    {
+        Vector3 dir = m_target.transform.position - this.gameObject.transform.position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 }

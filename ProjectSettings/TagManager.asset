@@ -50,3 +50,9 @@ TagManager:
   - name: Cyaractoer
     uniqueID: 700108089
     locked: 0
+  - name: Trap
+    uniqueID: 1703930483
+    locked: 0
+  - name: UI
+    uniqueID: 2667128869
+    locked: 0
