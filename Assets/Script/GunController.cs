@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-
 
 public class GunController : MonoBehaviour
 {
@@ -17,7 +15,8 @@ public class GunController : MonoBehaviour
     GameObject m_target;
     //攻撃対象のデータを保持しておく変数
     EnemyDeta m_targetDeta;
-    BulletController m_bulletController;
+    AudioSource m_source;
+    [SerializeField] AudioClip m_shotSE;
     bool m_farstAtack;
     // Start is called before the first frame update
     void Start()
@@ -26,12 +25,14 @@ public class GunController : MonoBehaviour
         m_intervalCount = m_interval;
         m_target = null;
         m_targetDeta = null;
-        m_bulletController = m_bullet.GetComponent<BulletController>();
+        m_source = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
+        LockAtField();
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         if (m_target && m_targetDeta)
         {
             QuickAtack();
@@ -43,35 +44,16 @@ public class GunController : MonoBehaviour
         }
 
     }
-
-    //シーンからエネミーを見つけてくる
-    public void SetTaget()
-    {
-        m_target = GameObject.FindGameObjectWithTag("Enemy");
-    }
-    //弾となるオブジェクトを生成する
-    public void Atack()
-    {
-        if (m_intervalCount <= 0)
-        {
-            Instantiate(m_bullet, this.gameObject.transform.position, Quaternion.identity);
-            m_intervalCount = m_interval;
-        }
-        else
-        {
-            m_intervalCount -= Time.deltaTime;
-        }
-    }
-
+    
     public void QuickAtack()
     {
         if (m_intervalCount <= 0 || m_farstAtack)
         {
             m_targetDeta.Damage(m_damge);
-            Debug.DrawLine(this.gameObject.transform.position, m_target.transform.position, Color.red,1f);
             GameObject bullet =  Instantiate(m_bullet,this.gameObject.transform.position,Quaternion.identity);
             BulletController bc = bullet.GetComponent<BulletController>();
             bc.MoveStart(m_target.transform.position);
+            m_source.PlayOneShot(m_shotSE);
             m_intervalCount = m_interval;
             m_farstAtack = false;
         }
@@ -80,7 +62,7 @@ public class GunController : MonoBehaviour
             m_intervalCount -= Time.deltaTime;
         }
     }
-
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!m_target) 
@@ -98,7 +80,7 @@ public class GunController : MonoBehaviour
     }
 
     private void OnTriggerStay2D(Collider2D collision)
-    {
+    {   
         if (m_target)
         {
             return;
@@ -112,7 +94,7 @@ public class GunController : MonoBehaviour
             }
         }
     }
-
+    
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (m_target == collision.gameObject)
@@ -122,10 +104,32 @@ public class GunController : MonoBehaviour
         }
     }
 
+
+
     private void LockAtTarget()
     {
-        Vector3 dir = m_target.transform.position - this.gameObject.transform.position;
+        Vector3 dir = Vector3.Normalize(m_target.transform.position - this.gameObject.transform.position);
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
+    }
+
+    private void LockAtField()
+    {
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("Generater");
+        GameObject minDistanceObject = gos[0];
+        float minDistance = Vector3.Distance(this.gameObject.transform.position, gos[0].transform.position);
+        foreach (var item in gos)
+        {
+            float distance = Vector3.Distance(this.gameObject.transform.position, item.transform.position);
+            if (minDistance > distance)
+            {
+                minDistance = distance;
+                minDistanceObject = item;
+            }
+        }
+
+        Vector3 dir = minDistanceObject.transform.position - this.gameObject.transform.position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
     }
 }

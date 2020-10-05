@@ -4,25 +4,52 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
+/// <summary>
+/// ゲームの進行状態を表すenum
+/// </summary>
+public enum GameStatus
+{
+    /// <summary>初期化</summary>
+    initiate,
+    /// <summary>ゲームスタート</summary>
+    gameStart,
+    /// <summary>ゲーム中</summary>
+    nowGame,
+    /// <summary>ゲームクリア</summary>
+    Clear,
+    /// <summary>ゲームオーバー</summary>
+    GameOver,
+    GameEnd,
+    /// <summary>デバッグ用</summary>
+    Debug
+}
 public class GameManager : MonoBehaviour
 {
     public GameStatus m_status { get; set; }
     [SerializeField] int m_rimit = 3;
-    int m_score = 0;
     [field:SerializeField]
     public int EnemyNum { get; set; }
+    //UI用各種テキスト
     [SerializeField] Text m_enemyNumText;
     [SerializeField] Text m_towerHPText;
+    [SerializeField] Text m_resourceText;
     //アイテムを購入するのに必要なポイント
 
     [field:SerializeField]
     public int m_resourcePoint { get; private set; } = 1200;
     //リソースポイントを表示するテキスト
-    [SerializeField] Text m_resourceText;
+    
+    [SerializeField] GameObject m_clearImage;
+    float alpha = 0;
+    [SerializeField] float alphaMaguni = 0.01f;
+    AudioSource m_audio;
     // Start is called before the first frame update
     void Start()
     {
         m_status = GameStatus.initiate;
+        m_audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
+        SetEnemyNum();
     }
 
     // Update is called once per frame
@@ -34,73 +61,62 @@ public class GameManager : MonoBehaviour
         switch (m_status)
         {
             case GameStatus.initiate:
-                Debug.Log("initiate");
                 m_resourceText.text = m_resourcePoint.ToString();
                 m_enemyNumText.text = EnemyNum.ToString();
                 GetTowerHP();
                 m_status = GameStatus.gameStart;
                 break;
             case GameStatus.gameStart:
-                Debug.Log("gamestart");
                 m_status = GameStatus.nowGame;
                 break;
             case GameStatus.nowGame:
-                if (m_score >= m_rimit)
-                {
-                    m_status = GameStatus.Clear;
-                }
                 break;
             case GameStatus.Clear:
                 Debug.Log("gamecear");
-                m_status = GameStatus.GameOver;
+                m_audio.Stop();
+                Time.timeScale = 0;
+                Image im = m_clearImage.GetComponent<Image>();
+                Text text = m_clearImage.GetComponentInChildren<Text>();
+                if (im.color.a < 1)
+                {
+                    m_clearImage.SetActive(true);
+                    text.text = "Game\nClear";
+                    im.color = new Color(im.color.r, im.color.g, im.color.b, alpha);
+                    alpha += alphaMaguni;
+                }
+                else
+                {
+                    m_status = GameStatus.GameEnd;
+                }
                 break;
             case GameStatus.GameOver:
                 Debug.Log("gameover");
+                m_audio.Stop();
+                Time.timeScale = 0;
+                Image overIm = m_clearImage.GetComponent<Image>();
+                Text overText = m_clearImage.GetComponentInChildren<Text>();
+                if (overIm.color.a < 1)
+                {
+                    m_clearImage.SetActive(true);
+                    overText.text = "Game\nOver";
+                    overIm.color = new Color(overIm.color.r, overIm.color.g, overIm.color.b, alpha);
+                    alpha += alphaMaguni;
+                }
+                else
+                {
+                    m_status = GameStatus.GameEnd;
+                }
+                break;
+            case GameStatus.GameEnd:
+                GeneraterController gc = GameObject.FindGameObjectWithTag("GContr").GetComponent<GeneraterController>();
+                gc.StopGenerate();
+                Time.timeScale = 1;
                 m_status = GameStatus.Debug;
                 break;
         }
-        if (Input.GetButtonDown("Fire1"))
-        {
-            AddScore();
-        }
     }
 
-    /// <summary>
-    /// ゲームの進行状態を表すenum
-    /// </summary>
-    public  enum  GameStatus
-    { 
-        /// <summary>初期化</summary>
-        initiate,
-        /// <summary>ゲームスタート</summary>
-        gameStart,
-        /// <summary>ゲーム中</summary>
-        nowGame,
-        /// <summary>ゲームクリア</summary>
-        Clear,
-        /// <summary>ゲームオーバー</summary>
-        GameOver,
-        /// <summary>デバッグ用</summary>
-        Debug
-    }
-
-    /// <summary>
-    /// シーンを移行するための関数
-    /// </summary>
-    /// <param name="sceneName">移行先のシーン名</param>
-    private void ChangeScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-    }
-
-    /// <summary>
-    /// スコアを加算する関数
-    /// </summary>
-    public void AddScore()
-    {
-        m_score++;
-    }
-
+    
     /// <summary>
     /// アイテムを購入するための関数
     /// </summary>
@@ -142,5 +158,11 @@ public class GameManager : MonoBehaviour
         GameObject go = GameObject.FindGameObjectWithTag("Tower");
         TowerDeta td = go.GetComponent<TowerDeta>();
         m_towerHPText.text = td.m_towerHP.ToString();
+    }
+
+    private void SetEnemyNum()
+    {
+        GeneraterController gc = GameObject.FindGameObjectWithTag("GContr").GetComponent<GeneraterController>();
+        EnemyNum = gc.GetEnemyNum();
     }
 }

@@ -5,14 +5,12 @@ using UnityEngine;
 public class GeneraterController : MonoBehaviour
 {
     [SerializeField] GameObject[] m_generaters;
-    [SerializeField] GenerateData[] m_Datars;
+    [SerializeField] RoundGenerateData[] m_roundDatas;
     int m_dataIndex = 0;
-    int m_generateNum;
-    float m_genarateCount;
-    float m_generateMagni;
     float m_nextWaitTime;
-    [SerializeField] GameObject m_enemy;
     [SerializeField] float m_generateWaiteTime = 3f;
+    int m_endFlug;
+    int m_endFlugCount;
      // Start is called before the first frame update
     void Start()
     {
@@ -21,28 +19,24 @@ public class GeneraterController : MonoBehaviour
 
     public IEnumerator Contorolle()
     {
-        while (m_dataIndex < m_Datars.Length)
-        {
-            GenerateData data = m_Datars[m_dataIndex];
-            SetData(data);
-            while (m_generateNum > 0)
+        while (m_dataIndex < m_roundDatas.Length)
+        {   
+                RoundGenerateData roundData = m_roundDatas[m_dataIndex];
+                m_nextWaitTime = roundData.NextWaiteTime;
+                GenerateData[] datas = roundData.m_generatDatas;
+                m_endFlug = datas.Length;
+                for (int i = 0; i < datas.Length; i++)
+                {
+                    GenerateData data = datas[i];
+                    EnemyGenarater generater = m_generaters[data.GeneraterIndex].GetComponent<EnemyGenarater>();
+                    generater.StartGenarate(data);
+                }
+            while (m_endFlug != m_endFlugCount)
             {
-                if (m_genarateCount <= 0)
-                {
-                   GameObject go = Instantiate(m_enemy, m_generaters[data.GeneraterIndex].transform.position, Quaternion.identity);
-                   EnemyMove em = go.GetComponent<EnemyMove>();
-                   em.waypoints = data.Waypoint;
-                   em.OnMove();
-                   m_genarateCount = m_generateMagni;
-                    m_generateNum--;
-                }
-                else
-                {
-                    m_genarateCount -= Time.deltaTime;
-                }
                 yield return null;
             }
-           yield return new WaitForSeconds(m_nextWaitTime);
+            yield return new WaitForSeconds(m_nextWaitTime);
+            m_endFlugCount = 0;
             m_dataIndex++;
         }
     }
@@ -57,10 +51,32 @@ public class GeneraterController : MonoBehaviour
         StartCoroutine(Contorolle());
     }
 
-    private void SetData(GenerateData data)
+    public void EndGenerate()
     {
-        m_generateMagni = data.GenerateMargin;
-        m_generateNum = data.GenerateNum;
-        m_nextWaitTime = data.NextWateTime;
+        m_endFlugCount++;
+    }
+
+    public int GetEnemyNum()
+    {
+        int enemyNum = 0;
+        for (int i = 0; i < m_roundDatas.Length; i++)
+        {   
+            for (int j = 0; j < m_roundDatas[i].m_generatDatas.Length; j++)
+            {
+                enemyNum += m_roundDatas[i].m_generatDatas[j].GenerateNum;
+            }
+        }
+
+        return enemyNum;
+    }
+
+    public void StopGenerate()
+    {
+        StopCoroutine(Contorolle());
+        GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        for (int i = 0; i < enemys.Length; i++)
+        {
+            Destroy(enemys[i]);
+        }
     }
 }

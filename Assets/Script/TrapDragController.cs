@@ -4,18 +4,24 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class TrapDragController : MonoBehaviour,IDragHandler,IDropHandler,IBeginDragHandler
 {
     [SerializeField] float m_distance = 10f;
     [SerializeField] LayerMask m_hitLayer;
     [SerializeField] GameObject m_setObject;
+    [SerializeField] AudioClip m_setSE;
+    [SerializeField] GameObject m_setObjectImage;
     GameManager m_gameManager;
     TrapDeta m_objectData;
     Tilemap m_tilemap;
+    AudioSource m_source;
+    
 
     private void Start()
     {
+        m_source = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
         m_gameManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
         m_objectData = m_setObject.GetComponent<TrapDeta>();
         m_tilemap = GameObject.FindGameObjectWithTag("setField").GetComponent<Tilemap>();
@@ -23,32 +29,25 @@ public class TrapDragController : MonoBehaviour,IDragHandler,IDropHandler,IBegin
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        RectTransform canvasTranse = GameObject.Find("Canvas").GetComponent<RectTransform>();
-        GameObject go = GameObject.Instantiate(this.gameObject) as GameObject;
-        go.transform.SetParent(canvasTranse);
-        go.transform.localPosition = this.gameObject.transform.localPosition;
-        go.transform.localScale = this.gameObject.transform.localScale;
+        m_setObjectImage.SetActive(true);
+        m_setObjectImage.transform.localPosition = this.gameObject.transform.localPosition;
     }
 
     public void OnDrag(PointerEventData eventData)
-    { 
-        this.gameObject.transform.position = eventData.position;
+    {
+        m_setObjectImage.transform.position = eventData.position;
     }
     
 
     public void OnDrop(PointerEventData eventData)
     {
         TrapInstallation();
-        Destroy(this.gameObject);
+        m_source.PlayOneShot(m_setSE);
+        m_setObjectImage.SetActive(false);
     }
 
     public void TrapInstallation()
-    {
-        
-            /*
-            Vector3 screenPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 setPos = screenPos + new Vector3(0, 0, 10);
-            */
+    {       
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D[] hits = Physics2D.RaycastAll(ray.origin, ray.direction, m_distance, m_hitLayer);
         

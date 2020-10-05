@@ -18,11 +18,6 @@ public class EnemyDeta : MonoBehaviour
         m_animator = GetComponent<Animator>();
     }
 
-    private void Update()
-    {
-        
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         string tag = collision.gameObject.tag;
@@ -32,11 +27,7 @@ public class EnemyDeta : MonoBehaviour
                 GameObject go = GameObject.FindGameObjectWithTag("Tower");
                 TowerDeta td = go.GetComponent<TowerDeta>();
                 td.DamageToTower(m_atackPoint);
-                GameObject go1 = GameObject.FindGameObjectWithTag("Manager");
-                GameManager gm = go1.GetComponent<GameManager>();
-                gm.DecreceEnemy();
-                gm.GetTowerHP();
-                Destroy(this.gameObject);
+                EnemyDstroy();
                 break;
             default:
                 break;
@@ -68,6 +59,9 @@ public class EnemyDeta : MonoBehaviour
         GameObject go = GameObject.FindGameObjectWithTag("Manager");
         GameManager gm = go.GetComponent<GameManager>();
         gm.DecreceEnemy();
+        gm.GetTowerHP();
+        EnemyGenarater eg = GetComponentInParent<EnemyGenarater>();
+        eg.CheckChiled();
         Destroy(this.gameObject);
     }
 }

@@ -7,16 +7,6 @@ public class TowerDeta : MonoBehaviour
     [field:SerializeField]
     public int m_towerHP { get; set; } = 10;
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void DamageToTower(int damage)
     {
@@ -34,6 +24,6 @@ public class TowerDeta : MonoBehaviour
     public void GameOver()
     {
         GameManager gm = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
-        gm.m_status = GameManager.GameStatus.Clear;
+        gm.m_status = GameManager.GameStatus.GameOver;
     }
 }
