@@ -24,6 +24,6 @@ public class TowerDeta : MonoBehaviour
     public void GameOver()
     {
         GameManager gm = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
-        gm.m_status = GameManager.GameStatus.GameOver;
+        gm.m_status = GameStatus.GameOver;
     }
 }
