@@ -6,6 +6,13 @@ TagManager:
   tags:
   - Enemy
   - Filed
+  - Trap
+  - Tower
+  - Manager
+  - setField
+  - GContr
+  - Audio
+  - Generater
   layers:
   - Default
   - TransparentFX
@@ -42,4 +49,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Stage
+    uniqueID: 270612165
+    locked: 0
+  - name: Trap
+    uniqueID: 1703930483
+    locked: 0
+  - name: Cyaractoer
+    uniqueID: 700108089
+    locked: 0
+  - name: UI
+    uniqueID: 2667128869
     locked: 0
