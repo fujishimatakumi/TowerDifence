@@ -6,7 +6,7 @@ using System.Windows.Markup;
 using System.Xml.Serialization;
 using TMPro;
 using UnityEngine;
-
+//見つからない場合無限ループに入るので修正が必要
 public class Astar : MonoBehaviour
 {
     public int FieldSizeX { get; set; }
@@ -14,6 +14,7 @@ public class Astar : MonoBehaviour
     Node[,] m_node;
     Node[,] m_openNode;
     Node[,] m_closeNode;
+    List<Vector2Int> tmpList = new List<Vector2Int>();
 
     int m_hCost;
 
@@ -63,8 +64,11 @@ public class Astar : MonoBehaviour
         m_openNode[startNodePos.x, startNodePos.y] = Node.CreateNode(startNodePos, goleNodePos);
         m_openNode[startNodePos.x, startNodePos.y].SetFromNodePos(startNodePos);
         m_openNode[startNodePos.x, startNodePos.y].Add();
-        
-        while (true)
+
+        int count = 0;
+        int counter = 500;
+
+        while (count < counter)
         {
             var bestScorePos = GetBestScorePos();
             OpenNode(bestScorePos, goleNodePos);
@@ -72,6 +76,12 @@ public class Astar : MonoBehaviour
             {
                 break;
             }
+            count++;
+        }
+
+        if (count >= counter)
+        {
+            return false;
         }
 
         ResolveRoute(startNodePos, goleNodePos, routResult);
@@ -181,7 +191,7 @@ public class Astar : MonoBehaviour
     {
         var value = new Vector2Int(0, 0);
 
-        int min = int.MaxValue;
+        float min = float.MaxValue;
         for (int x = 0; x < FieldSizeX; x++)
         {
             for (int y = 0; y < FieldSizeY; y++)
@@ -206,7 +216,7 @@ public class Astar : MonoBehaviour
     {
         if (result == null)
         {
-            result = new List<Vector2Int>();
+            result = tmpList;
         }
         else
         {

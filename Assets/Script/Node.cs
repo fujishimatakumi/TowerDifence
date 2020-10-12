@@ -12,9 +12,9 @@ public class Node : MonoBehaviour
 {
     public Vector2Int m_nodePos { get; }
     public Vector2Int m_fromNodePos { get; private set; }
-    public int m_cost { get; private set; }
+    public float m_cost { get; private set; }
     //仮想コスト
-    public int m_hCost;
+    public float m_hCost;
     public bool m_isLock { get; set; }
     public bool m_isActiv { get; set; }
 
@@ -30,7 +30,7 @@ public class Node : MonoBehaviour
 
     public  void UpdateGoleNodePos(Vector2Int golePos)
     {
-        m_hCost = (golePos.x - m_nodePos.x) + (golePos.y - m_nodePos.y);
+        m_hCost = Mathf.Sqrt(Mathf.Pow((golePos.x - m_nodePos.x),2) + Mathf.Pow((golePos.y - m_nodePos.y),2));
     }
 
 
@@ -43,7 +43,7 @@ public class Node : MonoBehaviour
         UpdateGoleNodePos(golenodePos);
     }
 
-    public int GetScore()
+    public float GetScore()
     {
         return m_cost + m_hCost;
     }
@@ -67,7 +67,7 @@ public class Node : MonoBehaviour
         m_isLock = isLock;
     }
 
-    public void SetCost(int cost)
+    public void SetCost(float cost)
     {
         m_cost = cost;
     }
