@@ -1,7 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Security.Policy;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -16,16 +13,17 @@ public class Node : MonoBehaviour
     public Vector2Int m_nodePos { get; }
     public Vector2Int m_fromNodePos { get; private set; }
     public int m_cost { get; private set; }
+    //仮想コスト
     public int m_hCost;
     public bool m_isLock { get; set; }
     public bool m_isActiv { get; set; }
 
-    public static Node CleateBrankNode(Vector2Int position)
+    public static Node CreateBrankNode(Vector2Int position)
     {
         return new Node(position,new Vector2Int(-1,-1));
     }
 
-    public static Node CleateNode(Vector2Int pos, Vector2Int golePos)
+    public static Node CreateNode(Vector2Int pos, Vector2Int golePos)
     {
         return new Node(pos, golePos);
     }
