@@ -65,21 +65,22 @@ public class Astar : MonoBehaviour
         m_openNode[startNodePos.x, startNodePos.y].SetFromNodePos(startNodePos);
         m_openNode[startNodePos.x, startNodePos.y].Add();
 
-        int count = 0;
-        int counter = 500;
-
-        while (count < counter)
+        bool isOpen;
+        while (true)
         {
+
             var bestScorePos = GetBestScorePos();
+            isOpen = CheckOpen(bestScorePos);
+            if (!isOpen) break;
+            
             OpenNode(bestScorePos, goleNodePos);
             if (bestScorePos == goleNodePos)
             {
                 break;
             }
-            count++;
         }
 
-        if (count >= counter)
+        if (!isOpen)
         {
             return false;
         }
@@ -254,6 +255,35 @@ public class Astar : MonoBehaviour
         {
             //失敗
         }
+    }
+
+    /// <summary>4方向がクローズされたノードだった場合falseを返します</summary>
+    /// <param name="nodePos">基準となるノードの位置</param>
+    /// <returns></returns>
+    private bool CheckOpen(Vector2Int nodePos)
+    {
+        Vector2Int[] vectors = new Vector2Int[4];
+        Vector2Int up = new Vector2Int(nodePos.x, nodePos.y - 1);
+        Vector2Int down = new Vector2Int(nodePos.x, nodePos.y + 1);
+        Vector2Int left = new Vector2Int(nodePos.x - 1, nodePos.y);
+        Vector2Int right = new Vector2Int(nodePos.x + 1, nodePos.y);
+        vectors[0] = up;
+        vectors[1] = down;
+        vectors[2] = left;
+        vectors[3] = right;
+        int count = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            if (!(vectors[i].x < 0 || vectors[i].x >= FieldSizeX || vectors[i].y < 0 || vectors[i].y >= FieldSizeY))
+            {
+                if (m_closeNode[vectors[i].x, vectors[i].y].m_isActiv == true || m_node[vectors[i].x,vectors[i].y].m_isLock == true)
+                {
+                    count++;
+                }
+            }
+        }
+
+        return count != 4;
     }
 
     public void SetLock(Vector2Int lockNodePos, bool lockStatus)
