@@ -6,9 +6,12 @@ public enum Status
 {
     None,
     Open,
-    Closed
+    Closed,
+    Start,
+    Gole,
+    Lock
 }
-public class Node : MonoBehaviour
+public class Node 
 {
     public Vector2Int m_nodePos { get; }
     public Vector2Int m_fromNodePos { get; private set; }
@@ -17,6 +20,8 @@ public class Node : MonoBehaviour
     public float m_hCost;
     public bool m_isLock { get; set; }
     public bool m_isActiv { get; set; }
+    
+    public Status m_status { get; set; }
 
     public static Node CreateBrankNode(Vector2Int position)
     {
@@ -25,7 +30,9 @@ public class Node : MonoBehaviour
 
     public static Node CreateNode(Vector2Int pos, Vector2Int golePos)
     {
-        return new Node(pos, golePos);
+        Node node = new Node(pos, golePos);
+        
+        return node;
     }
 
     public  void UpdateGoleNodePos(Vector2Int golePos)
@@ -38,6 +45,7 @@ public class Node : MonoBehaviour
     {
         m_nodePos = nodePos;
         m_isLock = false;
+        m_status = Status.None;
         Remove();
         m_cost = 0;
         UpdateGoleNodePos(golenodePos);
